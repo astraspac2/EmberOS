@@ -21,6 +21,24 @@ static volatile struct limine_memmap_request memmap_request = {
     .revision = 0,
 };
 
+__attribute__((used, section(".limine_requests")))
+static volatile struct limine_executable_cmdline_request cmdline_request = {
+    .id = LIMINE_EXECUTABLE_CMDLINE_REQUEST_ID,
+    .revision = 0,
+};
+
+struct limine_framebuffer *boot_framebuffer;
+
+static bool has_word(const char *haystack, const char *word) {
+    size_t n = strlen(word);
+    for (size_t i = 0; haystack[i]; i++) {
+        if (memcmp(haystack + i, word, n) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 __attribute__((used, section(".limine_requests_start")))
 static volatile uint64_t requests_start[4] = LIMINE_REQUESTS_START_MARKER;
 
@@ -41,7 +59,7 @@ static void ok(const char *msg) {
 static void update_status(void) {
     char line[128];
     uint64_t secs = timer_ticks() / timer_hz();
-    ksnprintf(line, sizeof(line), " EmberOS 0.3   up %lus   mem %lu/%lu MiB free   heap %lu KiB free",
+    ksnprintf(line, sizeof(line), " EmberOS 0.4   up %lus   mem %lu/%lu MiB free   heap %lu KiB free",
               secs, pmm_free_pages() * PAGE_SIZE / (1024 * 1024),
               pmm_total_pages() * PAGE_SIZE / (1024 * 1024),
               (uint64_t)heap_free_bytes() / 1024);
@@ -58,10 +76,11 @@ void kmain(void) {
         cpu_halt_forever();
     }
 
-    console_init(framebuffer_request.response->framebuffers[0]);
+    boot_framebuffer = framebuffer_request.response->framebuffers[0];
+    console_init(boot_framebuffer);
 
     console_set_fg(COLOR_ACCENT);
-    kprintf("EmberOS 0.3\n");
+    kprintf("EmberOS 0.4\n");
     console_set_fg(COLOR_DIM);
     kprintf("kernel core: memory, interrupts, timer, keyboard\n\n");
 
@@ -90,7 +109,19 @@ void kmain(void) {
     keyboard_init();
     ok("PS/2 keyboard");
 
+    fs_init();
+    ok("RAM file system");
+
     interrupts_enable();
+
+    bool safe_mode = cmdline_request.response != NULL &&
+                     cmdline_request.response->cmdline != NULL &&
+                     has_word(cmdline_request.response->cmdline, "safe");
+    if (!safe_mode) {
+        desktop_run(boot_framebuffer);  /* only returns if graphics setup failed */
+        console_set_fg(COLOR_ERR);
+        kprintf("Desktop failed to start, falling back to the shell.\n");
+    }
 
     console_set_fg(COLOR_FG);
     kprintf("\n");

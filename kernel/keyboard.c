@@ -22,7 +22,7 @@ static const char map_shift[58] = {
 
 static volatile int buffer[BUF_SIZE];
 static volatile size_t head, tail;
-static bool shift, caps, extended;
+static bool shift, caps, ctrl, extended;
 
 static void push(int c) {
     size_t next = (head + 1) % BUF_SIZE;
@@ -60,6 +60,10 @@ static void keyboard_irq(void) {
         shift = !release;
         return;
     }
+    if (code == 0x1D) {
+        ctrl = !release;
+        return;
+    }
     if (release) {
         return;
     }
@@ -68,6 +72,13 @@ static void keyboard_irq(void) {
         return;
     }
     if (code >= sizeof(map_plain)) {
+        return;
+    }
+    if (ctrl) {  /* Ctrl+letter arrives as 1..26 */
+        char l = map_plain[code];
+        if (l >= 'a' && l <= 'z') {
+            push(l - 'a' + 1);
+        }
         return;
     }
 

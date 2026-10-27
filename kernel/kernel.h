@@ -38,6 +38,7 @@ void *memset(void *dst, int c, size_t n);
 int memcmp(const void *a, const void *b, size_t n);
 size_t strlen(const char *s);
 int strcmp(const char *a, const char *b);
+size_t kstrlcpy(char *dst, const char *src, size_t size);
 
 /* ---- console.c ---- */
 
@@ -49,6 +50,16 @@ int strcmp(const char *a, const char *b);
 #define COLOR_OK      0x7CFF9E
 #define COLOR_ERR     0xFF4040
 
+/* While hooks are set (desktop mode), console output goes to them instead of
+ * the framebuffer. */
+struct console_hooks {
+    void (*putc)(char c);
+    void (*set_fg)(uint32_t rgb);
+    void (*clear)(void);
+};
+
+void console_set_hooks(const struct console_hooks *hooks);
+void console_reclaim(void);  /* drop hooks and take the screen back (panics) */
 void console_init(struct limine_framebuffer *fb);
 void console_clear(void);
 void console_set_fg(uint32_t rgb);
@@ -97,10 +108,46 @@ uint32_t timer_hz(void);
 void keyboard_init(void);
 int keyboard_getchar(void); /* ASCII, a KEY_* code, or -1 when nothing is waiting */
 
+/* ---- mouse.c: PS/2 mouse ---- */
+
+struct mouse_event {
+    int x, y;
+    int buttons;  /* bit 0 left, bit 1 right, bit 2 middle */
+};
+
+void mouse_init(int screen_w, int screen_h);
+bool mouse_poll(struct mouse_event *ev);
+
+/* ---- rtc.c: battery-backed clock ---- */
+
+struct rtc_time {
+    int year, month, day, hour, minute, second;
+};
+
+void rtc_read(struct rtc_time *t);
+
+/* ---- fs.c: in-memory file system (lost on reboot until step 7) ---- */
+
+#define FS_MAX_FILES 32
+#define FS_NAME_MAX  24
+
+void fs_init(void);
+int fs_find(const char *name);
+const char *fs_name(int slot);   /* NULL when the slot is unused */
+const char *fs_data(int slot);
+size_t fs_size(int slot);
+int fs_write(const char *name, const char *data, size_t len);  /* creates or replaces */
+int fs_remove(const char *name);
+
 /* ---- shell.c ---- */
 
 void shell_init(void);
 void shell_key(int key);
+__attribute__((noreturn)) void system_reboot(void);
+
+/* ---- desktop (desktop.c) ---- */
+
+void desktop_run(struct limine_framebuffer *fb);  /* returns only if graphics setup fails */
 
 /* ---- mm.c: physical memory and kernel heap ---- */
 

@@ -48,6 +48,18 @@ int strcmp(const char *a, const char *b) {
     return (unsigned char)*a - (unsigned char)*b;
 }
 
+size_t kstrlcpy(char *dst, const char *src, size_t size) {
+    size_t n = 0;
+    while (src[n] && n + 1 < size) {
+        dst[n] = src[n];
+        n++;
+    }
+    if (size) {
+        dst[n] = '\0';
+    }
+    return n;
+}
+
 size_t strlen(const char *s) {
     size_t n = 0;
     while (s[n]) {

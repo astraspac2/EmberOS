@@ -10,6 +10,11 @@ static struct limine_framebuffer *fb;
 static size_t cols, rows;
 static size_t cur_x, cur_y = 1;
 static uint32_t fg_rgb = COLOR_FG;
+static const struct console_hooks *hooks;
+
+void console_set_hooks(const struct console_hooks *h) {
+    hooks = h;
+}
 
 static uint32_t pack(uint32_t rgb) {
     uint32_t r = (rgb >> 16) & 0xFF;
@@ -83,7 +88,21 @@ void console_init(struct limine_framebuffer *framebuffer) {
 }
 
 /* Clears the text area; the status bar on row 0 is left alone. */
+void console_reclaim(void) {
+    if (!hooks) {
+        return;
+    }
+    hooks = NULL;
+    fill_cell_rows(0, rows, COLOR_BG);
+    cur_x = 0;
+    cur_y = 1;
+}
+
 void console_clear(void) {
+    if (hooks) {
+        hooks->clear();
+        return;
+    }
     fill_cell_rows(1, rows - 1, COLOR_BG);
     cur_x = 0;
     cur_y = 1;
@@ -92,9 +111,15 @@ void console_clear(void) {
 
 void console_set_fg(uint32_t rgb) {
     fg_rgb = rgb;
+    if (hooks) {
+        hooks->set_fg(rgb);
+    }
 }
 
 void console_status(const char *text) {
+    if (hooks) {
+        return;
+    }
     for (size_t c = 0; c < cols; c++) {
         char ch = (*text) ? *text++ : ' ';
         draw_glyph(c, 0, ch, COLOR_ACCENT, COLOR_BAR);
@@ -111,6 +136,10 @@ static void newline(void) {
 }
 
 void console_putc(char c) {
+    if (hooks) {
+        hooks->putc(c);
+        return;
+    }
     draw_cursor(false);
 
     if (c == '\n') {
@@ -286,6 +315,7 @@ int ksnprintf(char *buf, size_t size, const char *fmt, ...) {
 
 void panic(const char *fmt, ...) {
     __asm__ volatile ("cli");
+    console_reclaim();
     console_set_fg(COLOR_ERR);
     kprintf("\n*** KERNEL PANIC ***\n");
     va_list ap;

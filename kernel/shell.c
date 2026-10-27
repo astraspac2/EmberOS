@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "desktop.h"
 
 #define LINE_MAX 256
 #define HISTORY  16
@@ -68,7 +69,7 @@ static void cmd_uptime(int argc, char **argv) {
 static void cmd_version(int argc, char **argv) {
     (void)argc;
     (void)argv;
-    kprintf("EmberOS 0.3 (x86-64)\n");
+    kprintf("EmberOS 0.4 (x86-64)\n");
 }
 
 static void cmd_about(int argc, char **argv) {
@@ -80,10 +81,7 @@ static void cmd_about(int argc, char **argv) {
     kprintf("EmberOS: a hobby OS written from scratch in C.\n");
 }
 
-static void cmd_reboot(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
-    kprintf("Rebooting...\n");
+void system_reboot(void) {
     __asm__ volatile ("cli");
     for (int i = 0; i < 100000 && (inb(0x64) & 0x02); i++) {
     }
@@ -94,6 +92,87 @@ static void cmd_reboot(int argc, char **argv) {
     __asm__ volatile ("lidt %0; int3" : : "m"(empty));
     cpu_halt_forever();
 }
+
+static void cmd_reboot(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
+    kprintf("Rebooting...\n");
+    system_reboot();
+}
+
+static void cmd_ls(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
+    for (int i = 0; i < FS_MAX_FILES; i++) {
+        if (fs_name(i)) {
+            kprintf("  %s", fs_name(i));
+            for (size_t n = strlen(fs_name(i)); n < 26; n++) {
+                console_putc(' ');
+            }
+            kprintf("%lu B\n", (uint64_t)fs_size(i));
+        }
+    }
+}
+
+static void cmd_cat(int argc, char **argv) {
+    if (argc < 2) {
+        kprintf("usage: cat <file>\n");
+        return;
+    }
+    int slot = fs_find(argv[1]);
+    if (slot < 0) {
+        kprintf("no such file: %s\n", argv[1]);
+        return;
+    }
+    const char *d = fs_data(slot);
+    for (size_t i = 0; i < fs_size(slot); i++) {
+        console_putc(d[i]);
+    }
+    if (fs_size(slot) && d[fs_size(slot) - 1] != '\n') {
+        console_putc('\n');
+    }
+}
+
+static void cmd_rm(int argc, char **argv) {
+    if (argc < 2) {
+        kprintf("usage: rm <file>\n");
+        return;
+    }
+    if (fs_remove(argv[1]) < 0) {
+        kprintf("no such file: %s\n", argv[1]);
+    }
+}
+
+static void cmd_touch(int argc, char **argv) {
+    if (argc < 2) {
+        kprintf("usage: touch <file>\n");
+        return;
+    }
+    if (fs_find(argv[1]) < 0 && fs_write(argv[1], "", 0) < 0) {
+        kprintf("could not create %s\n", argv[1]);
+    }
+}
+
+static void cmd_write(int argc, char **argv) {
+    if (argc < 3) {
+        kprintf("usage: write <file> <text...>\n");
+        return;
+    }
+    char text[LINE_MAX];
+    size_t n = 0;
+    for (int i = 2; i < argc; i++) {
+        n += kstrlcpy(text + n, argv[i], sizeof(text) - n);
+        if (i + 1 < argc && n + 1 < sizeof(text)) {
+            text[n++] = ' ';
+        }
+    }
+    text[n++] = '\n';
+    if (fs_write(argv[1], text, n) < 0) {
+        kprintf("could not write %s\n", argv[1]);
+    }
+}
+
+static void cmd_desktop(int argc, char **argv);
 
 static void cmd_halt(int argc, char **argv) {
     (void)argc;
@@ -110,6 +189,12 @@ static const struct command commands[] = {
     { "uptime",  "time since boot",             cmd_uptime },
     { "version", "show the OS version",         cmd_version },
     { "about",   "about EmberOS",               cmd_about },
+    { "ls",      "list files",                  cmd_ls },
+    { "cat",     "print a file",                cmd_cat },
+    { "touch",   "create an empty file",        cmd_touch },
+    { "write",   "write <file> <text>",         cmd_write },
+    { "rm",      "delete a file",               cmd_rm },
+    { "desktop", "start the graphical desktop", cmd_desktop },
     { "reboot",  "restart the machine",         cmd_reboot },
     { "halt",    "stop the CPU",                cmd_halt },
     { NULL, NULL, NULL },
@@ -145,6 +230,16 @@ static void execute(char *text) {
     console_set_fg(COLOR_ERR);
     kprintf("unknown command: %s (try 'help')\n", argv[0]);
     console_set_fg(COLOR_FG);
+}
+
+extern struct limine_framebuffer *boot_framebuffer;
+
+static void cmd_desktop(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
+    kprintf("Starting desktop... (use Restart in the menu to leave)\n");
+    desktop_run(boot_framebuffer);
+    kprintf("could not start the desktop (graphics setup failed)\n");
 }
 
 /* ---- line editing ---- */
@@ -184,6 +279,8 @@ static void remember(void) {
 }
 
 void shell_init(void) {
+    len = 0;
+    browse = hist_count;
     console_set_fg(COLOR_FG);
     kprintf("Welcome to EmberOS. Type 'help' for a list of commands.\n\n");
     prompt();
