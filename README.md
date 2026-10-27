@@ -31,7 +31,13 @@ Requirements (Windows):
 - [LLVM/clang](https://llvm.org/) (with `lld`)
 - Python 3
 
-Build instructions will be added once the first kernel boots.
+Download the [Limine](https://github.com/limine-bootloader/limine) v12.9.5 binary release into `third_party/limine/limine-binary/` and `limine.h` from [limine-protocol](https://github.com/limine-bootloader/limine-protocol) into `third_party/limine/` (these are not committed). Then:
+
+```
+python build.py
+```
+
+This compiles the kernel and writes `EmberOS.iso` in the project root. No `xorriso` is needed; the ISO writer is built in.
 
 ## Running
 

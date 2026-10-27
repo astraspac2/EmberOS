@@ -5,3 +5,4 @@
 *.bin
 *.vmdk
 .claude/
+third_party/
