@@ -31,20 +31,26 @@ def build_kernel():
     clang = find_tool("clang")
     lld = find_tool("ld.lld")
     os.makedirs(BUILD, exist_ok=True)
-    obj = os.path.join(BUILD, "main.o")
     elf = os.path.join(BUILD, "kernel.elf")
+    src_dir = os.path.join(ROOT, "kernel")
 
-    subprocess.check_call([
-        clang, "--target=x86_64-unknown-none-elf", "-std=c11", "-O2", "-g",
-        "-Wall", "-Wextra", "-ffreestanding", "-fno-stack-protector",
-        "-fno-stack-check", "-fno-lto", "-fno-PIC", "-fno-pie",
-        "-mno-red-zone", "-mcmodel=kernel", "-mno-mmx", "-mno-sse", "-mno-sse2",
-        "-I", os.path.join(ROOT, "kernel"), "-I", LIMINE_INC,
-        "-c", os.path.join(ROOT, "kernel", "main.c"), "-o", obj,
-    ])
+    objs = []
+    for name in sorted(os.listdir(src_dir)):
+        if not name.endswith((".c", ".S")):
+            continue
+        obj = os.path.join(BUILD, name + ".o")
+        objs.append(obj)
+        subprocess.check_call([
+            clang, "--target=x86_64-unknown-none-elf", "-std=c11", "-O2", "-g",
+            "-Wall", "-Wextra", "-ffreestanding", "-fno-stack-protector",
+            "-fno-stack-check", "-fno-lto", "-fno-PIC", "-fno-pie",
+            "-mno-red-zone", "-mcmodel=kernel", "-mno-mmx", "-mno-sse", "-mno-sse2",
+            "-I", src_dir, "-I", LIMINE_INC,
+            "-c", os.path.join(src_dir, name), "-o", obj,
+        ])
     subprocess.check_call([
         lld, "-nostdlib", "-static", "-z", "max-page-size=0x1000",
-        "-T", os.path.join(ROOT, "kernel", "linker.ld"), obj, "-o", elf,
+        "-T", os.path.join(src_dir, "linker.ld"), *objs, "-o", elf,
     ])
     return elf
 

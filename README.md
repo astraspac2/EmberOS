@@ -12,8 +12,8 @@ A hobby operating system written from scratch in C, with its own x86-64 kernel, 
 
 ## Roadmap
 
-- [ ] 1. **Boot:** kernel starts and prints "Hello from EmberOS"
-- [ ] 2. **Core:** memory management, interrupts, timer, keyboard input
+- [x] 1. **Boot:** kernel starts and prints "Hello from EmberOS"
+- [x] 2. **Core:** memory management, interrupts, timer, keyboard input (needs testing in VMware)
 - [ ] 3. **Terminal:** text shell with `help`, `clear`, `echo`, `mem`, `reboot`
 - [ ] 4. **Graphics:** framebuffer, font rendering, mouse cursor
 - [ ] 5. **The Hearth:** windows, ember launcher, status strip
