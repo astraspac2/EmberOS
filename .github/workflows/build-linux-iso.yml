@@ -1,0 +1,56 @@
+name: Build EmberOS Linux ISO
+
+# Run it from the Actions tab ("Run workflow"). It builds the ISO in the cloud
+# and attaches it to a (pre-)release in this repo.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      - name: Build the ISO in a Debian trixie container
+        run: |
+          chmod +x linux/build.sh linux/config/hooks/live/*.hook.chroot
+          docker run --rm --privileged \
+            -v "$PWD/linux:/work" -w /work \
+            debian:trixie bash -c '
+              set -e
+              apt-get update
+              apt-get install -y --no-install-recommends \
+                live-build debootstrap squashfs-tools xorriso mtools dosfstools \
+                syslinux syslinux-common isolinux grub-pc-bin grub-efi-amd64-bin \
+                ca-certificates gnupg
+              ./build.sh
+            '
+
+      - name: Show the result
+        run: ls -lh linux/*.iso
+
+      - name: Publish as a pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "linux-iso-${{ github.run_number }}" linux/*.iso \
+            --title "EmberOS Linux ISO #${{ github.run_number }}" \
+            --notes "Debian 13 + XFCE + Calamares installer. Built from commit ${{ github.sha }}." \
+            --prerelease
+
+      - name: Upload the build log if something went wrong
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: linux/build.log
+          if-no-files-found: ignore

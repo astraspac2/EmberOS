@@ -1,0 +1,43 @@
+#!/bin/sh
+# Runs inside the image while it is being built: branding and desktop defaults.
+set -e
+
+# Name the OS (keep ID=debian so Debian tooling keeps working).
+if [ -f /usr/lib/os-release ]; then
+    sed -i \
+        -e 's/^NAME=.*/NAME="EmberOS"/' \
+        -e 's/^PRETTY_NAME=.*/PRETTY_NAME="EmberOS 0.1 (Debian 13 base)"/' \
+        /usr/lib/os-release
+fi
+echo "EmberOS 0.1 \\n \\l" > /etc/issue
+echo "EmberOS 0.1" > /etc/issue.net
+
+# "Install EmberOS" icon on every new user's desktop.
+mkdir -p /etc/skel/Desktop
+cp /usr/share/applications/emberos-install.desktop /etc/skel/Desktop/
+chmod +x /etc/skel/Desktop/emberos-install.desktop
+
+# Wallpaper for the usual virtual/real monitor names (xfdesktop keys it by name).
+WALL=/usr/share/backgrounds/emberos/emberos-wallpaper.png
+XML=/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+{
+    echo '<?xml version="1.0" encoding="UTF-8"?>'
+    echo '<channel name="xfce4-desktop" version="1.0">'
+    echo '  <property name="backdrop" type="empty">'
+    echo '    <property name="screen0" type="empty">'
+    for mon in monitor0 monitorVirtual-1 monitorVirtual1 monitorVirtual-0 monitorVGA-1 monitorHDMI-1 monitorDP-1 monitoreDP-1 monitorLVDS-1; do
+        echo "      <property name=\"$mon\" type=\"empty\">"
+        echo '        <property name="workspace0" type="empty">'
+        echo '          <property name="color-style" type="int" value="0"/>'
+        echo '          <property name="image-style" type="int" value="5"/>'
+        echo "          <property name=\"last-image\" type=\"string\" value=\"$WALL\"/>"
+        echo '        </property>'
+        echo '      </property>'
+    done
+    echo '    </property>'
+    echo '  </property>'
+    echo '</channel>'
+} > "$XML"
+
+# Boot splash / console branding is left at defaults for now.
+exit 0

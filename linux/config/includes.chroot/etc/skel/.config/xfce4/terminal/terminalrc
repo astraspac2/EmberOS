@@ -1,0 +1,10 @@
+[Configuration]
+FontName=Monospace 11
+ColorForeground=#D4EBDD
+ColorBackground=#07110B
+ColorCursor=#3DDC84
+ColorSelectionUseDefault=FALSE
+ColorSelection=#04140B
+ColorSelectionBackground=#3DDC84
+ScrollingBar=TERMINAL_SCROLLBAR_NONE
+MiscDefaultGeometry=100x30

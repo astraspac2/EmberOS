@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Install EmberOS
+GenericName=System Installer
+Comment=Install EmberOS to your computer
+Exec=sudo -E calamares
+Icon=system-software-install
+Terminal=false
+Categories=System;
+StartupNotify=true

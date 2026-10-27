@@ -6,3 +6,13 @@
 *.vmdk
 .claude/
 third_party/
+linux/chroot/
+linux/binary/
+linux/cache/
+linux/.build/
+linux/build.log
+linux/config/binary
+linux/config/bootstrap
+linux/config/chroot
+linux/config/common
+linux/config/source
