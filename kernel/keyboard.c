@@ -20,11 +20,11 @@ static const char map_shift[58] = {
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' ',
 };
 
-static volatile char buffer[BUF_SIZE];
+static volatile int buffer[BUF_SIZE];
 static volatile size_t head, tail;
 static bool shift, caps, extended;
 
-static void push(char c) {
+static void push(int c) {
     size_t next = (head + 1) % BUF_SIZE;
     if (next != tail) {
         buffer[head] = c;
@@ -39,8 +39,17 @@ static void keyboard_irq(void) {
         extended = true;
         return;
     }
-    if (extended) {  /* arrows, home/end, etc. come later */
+    if (extended) {
         extended = false;
+        if (!(sc & 0x80)) {
+            switch (sc) {
+            case 0x48: push(KEY_UP); break;
+            case 0x50: push(KEY_DOWN); break;
+            case 0x4B: push(KEY_LEFT); break;
+            case 0x4D: push(KEY_RIGHT); break;
+            default: break;
+            }
+        }
         return;
     }
 
@@ -82,7 +91,7 @@ int keyboard_getchar(void) {
     if (tail == head) {
         return -1;
     }
-    char c = buffer[tail];
+    int c = buffer[tail];
     tail = (tail + 1) % BUF_SIZE;
-    return (unsigned char)c;
+    return c;
 }

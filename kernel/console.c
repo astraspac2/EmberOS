@@ -78,11 +78,13 @@ void console_init(struct limine_framebuffer *framebuffer) {
     fb = framebuffer;
     cols = fb->width / CELL_W;
     rows = fb->height / CELL_H;
+    fill_cell_rows(0, rows, COLOR_BG);
     console_clear();
 }
 
+/* Clears the text area; the status bar on row 0 is left alone. */
 void console_clear(void) {
-    fill_cell_rows(0, rows, COLOR_BG);
+    fill_cell_rows(1, rows - 1, COLOR_BG);
     cur_x = 0;
     cur_y = 1;
     draw_cursor(true);

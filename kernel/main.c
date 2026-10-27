@@ -41,7 +41,7 @@ static void ok(const char *msg) {
 static void update_status(void) {
     char line[128];
     uint64_t secs = timer_ticks() / timer_hz();
-    ksnprintf(line, sizeof(line), " EmberOS 0.2   up %lus   mem %lu/%lu MiB free   heap %lu KiB free",
+    ksnprintf(line, sizeof(line), " EmberOS 0.3   up %lus   mem %lu/%lu MiB free   heap %lu KiB free",
               secs, pmm_free_pages() * PAGE_SIZE / (1024 * 1024),
               pmm_total_pages() * PAGE_SIZE / (1024 * 1024),
               (uint64_t)heap_free_bytes() / 1024);
@@ -61,7 +61,7 @@ void kmain(void) {
     console_init(framebuffer_request.response->framebuffers[0]);
 
     console_set_fg(COLOR_ACCENT);
-    kprintf("EmberOS 0.2\n");
+    kprintf("EmberOS 0.3\n");
     console_set_fg(COLOR_DIM);
     kprintf("kernel core: memory, interrupts, timer, keyboard\n\n");
 
@@ -92,15 +92,15 @@ void kmain(void) {
 
     interrupts_enable();
 
-    console_set_fg(COLOR_ACCENT);
-    kprintf("\nType something (shift, caps lock and backspace work):\n");
     console_set_fg(COLOR_FG);
+    kprintf("\n");
+    shell_init();
 
     uint64_t last_sec = (uint64_t)-1;
     for (;;) {
         int c;
         while ((c = keyboard_getchar()) >= 0) {
-            console_putc((char)c);
+            shell_key(c);
         }
         uint64_t sec = timer_ticks() / timer_hz();
         if (sec != last_sec) {

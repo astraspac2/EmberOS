@@ -37,6 +37,7 @@ void *memmove(void *dst, const void *src, size_t n);
 void *memset(void *dst, int c, size_t n);
 int memcmp(const void *a, const void *b, size_t n);
 size_t strlen(const char *s);
+int strcmp(const char *a, const char *b);
 
 /* ---- console.c ---- */
 
@@ -88,8 +89,18 @@ uint32_t timer_hz(void);
 
 /* ---- keyboard.c ---- */
 
+#define KEY_UP    0x100
+#define KEY_DOWN  0x101
+#define KEY_LEFT  0x102
+#define KEY_RIGHT 0x103
+
 void keyboard_init(void);
-int keyboard_getchar(void); /* -1 when no key is waiting */
+int keyboard_getchar(void); /* ASCII, a KEY_* code, or -1 when nothing is waiting */
+
+/* ---- shell.c ---- */
+
+void shell_init(void);
+void shell_key(int key);
 
 /* ---- mm.c: physical memory and kernel heap ---- */
 
