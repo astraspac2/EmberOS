@@ -22,6 +22,56 @@ lb config \
     --iso-volume "EmberOS" \
     --bootappend-live "boot=live components quiet splash username=ember hostname=emberos locales=en_US.UTF-8 keyboard-layouts=de"
 
+# ---- boot menu theme (best effort: a miss here must never fail the build) ----
+theme_bootloaders() {
+    local src=/usr/share/live/build/bootloaders
+    if [ ! -d "$src" ]; then
+        echo "theme: no bootloader templates found at $src"
+        return 0
+    fi
+
+    mkdir -p config/bootloaders
+    cp -r "$src"/. config/bootloaders/
+
+    echo "theme: bootloader template files:"
+    find config/bootloaders -type f | sort
+
+    # Wording
+    grep -rIl 'Debian' config/bootloaders 2>/dev/null | while read -r f; do
+        sed -i 's/Debian GNU\/Linux/EmberOS/g; s/Debian/EmberOS/g' "$f"
+    done
+
+    # BIOS (syslinux) menu: background image and green colours
+    find config/bootloaders -name splash.svg | while read -r f; do
+        cp boot/splash-640x480.png "$(dirname "$f")/splash.png"
+        rm -f "$f"
+    done
+    find config/bootloaders -name splash.png | while read -r f; do
+        cp boot/splash-640x480.png "$f"
+    done
+    find config/bootloaders -name stdmenu.cfg | while read -r f; do
+        cat >> "$f" <<'EOF'
+
+menu color screen   37;40 #80ffffff #00000000 std
+menu color border   30;44 #ff3ddc84 #00000000 std
+menu color title    1;36;44 #ff3ddc84 #00000000 std
+menu color unsel    37;44 #ffd4ebdd #00000000 std
+menu color sel      7;37;40 #ff04140b #ff3ddc84 all
+menu color hotsel   1;7;37;40 #ff04140b #ff3ddc84 all
+menu color hotkey   1;37;44 #ff3ddc84 #00000000 std
+menu color tabmsg   31;40 #ff6fa588 #00000000 std
+menu color help     37;40 #ffd4ebdd #00000000 std
+EOF
+    done
+
+    # UEFI (GRUB) menu: background image
+    find config/bootloaders -path '*theme*' -name 'background.png' | while read -r f; do
+        cp boot/grub-background.png "$f"
+    done
+}
+
+theme_bootloaders || echo "theme: skipped after an error (continuing)"
+
 lb build 2>&1 | tee build.log
 
 ls -lh ./*.iso

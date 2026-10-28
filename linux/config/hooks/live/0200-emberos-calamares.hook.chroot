@@ -1,0 +1,46 @@
+#!/bin/sh
+# Rebrand the Calamares installer window from Debian to EmberOS.
+# Best effort: nothing in here may fail the image build.
+set +e
+
+BRAND_DIR=/etc/calamares/branding
+SRC="$BRAND_DIR/debian"
+DST="$BRAND_DIR/emberos"
+
+if [ -d "$SRC" ] && [ -f /etc/calamares/settings.conf ]; then
+    rm -rf "$DST"
+    cp -r "$SRC" "$DST"
+
+    DESC="$DST/branding.desc"
+    if [ -f "$DESC" ]; then
+        sed -i \
+            -e 's/Debian GNU\/Linux/EmberOS/g' \
+            -e 's/Debian/EmberOS/g' \
+            -e 's/^\([[:space:]]*componentName:\).*/\1  emberos/' \
+            -e 's/^\([[:space:]]*sidebarBackground:\).*/\1    "#0A1810"/' \
+            -e 's/^\([[:space:]]*sidebarText:\).*/\1          "#D4EBDD"/' \
+            -e 's/^\([[:space:]]*sidebarTextSelect:\).*/\1    "#04140B"/' \
+            -e 's/^\([[:space:]]*sidebarTextHighlight:\).*/\1 "#3DDC84"/' \
+            "$DESC"
+
+        # Use the EmberOS orb for the logo and window icon where they are PNGs.
+        for key in productLogo productIcon; do
+            name=$(sed -n "s/^[[:space:]]*$key:[[:space:]]*\"\{0,1\}\([^\"[:space:]]*\)\"\{0,1\}.*/\1/p" "$DESC" | head -n 1)
+            case "$name" in
+                *.png) [ -f "$DST/$name" ] && cp /usr/share/pixmaps/emberos-install.png "$DST/$name" ;;
+            esac
+        done
+    fi
+
+    # Slideshow and other QML text
+    grep -rIl 'Debian' "$DST" 2>/dev/null | while read -r f; do
+        sed -i 's/Debian GNU\/Linux/EmberOS/g; s/Debian/EmberOS/g' "$f"
+    done
+
+    sed -i 's/^\([[:space:]]*branding:\).*/\1 emberos/' /etc/calamares/settings.conf
+    echo "calamares: branding set to emberos"
+else
+    echo "calamares: debian branding not found, left unchanged"
+fi
+
+exit 0

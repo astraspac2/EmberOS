@@ -25,6 +25,15 @@ if grep -rlq 'Name=Install EmberOS' /usr/share/applications --exclude=emberos-in
 fi
 rm -f /etc/skel/Desktop/*.desktop
 
+# Show fastfetch (with the EmberOS logo) when a terminal opens.
+cat >> /etc/skel/.bashrc <<'EOF'
+
+# EmberOS greeting: remove these lines if you do not want it
+if [ -t 1 ] && command -v fastfetch >/dev/null 2>&1; then
+    fastfetch
+fi
+EOF
+
 # Wallpaper for the usual virtual/real monitor names (xfdesktop keys it by name).
 WALL=/usr/share/backgrounds/emberos/emberos-wallpaper.png
 XML=/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml

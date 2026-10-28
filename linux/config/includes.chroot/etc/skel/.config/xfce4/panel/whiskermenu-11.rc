@@ -1,0 +1,12 @@
+favorites=xfce4-terminal-emulator.desktop,xfce4-file-manager.desktop,xfce4-web-browser.desktop,org.xfce.mousepad.desktop
+button-icon=/usr/share/pixmaps/emberos-install.png
+button-title=EmberOS
+show-button-icon=true
+show-button-title=false
+launcher-show-name=true
+launcher-show-description=false
+launcher-show-tooltip=true
+menu-opacity=96
+position-search-alternate=true
+position-commands-alternate=true
+position-categories-alternate=false
