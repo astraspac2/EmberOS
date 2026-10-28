@@ -15,7 +15,7 @@ echo "EmberOS 0.1" > /etc/issue.net
 # Installer launcher: rebrand Debian's Calamares entry and keep ours only as a
 # fallback. The desktop icon itself is created at login by
 # /usr/local/bin/emberos-live-desktop, in the live session only.
-chmod +x /usr/local/bin/emberos-live-desktop
+chmod +x /usr/local/bin/emberos-live-desktop /usr/local/bin/emberos-wallpaper
 grep -rl 'Install Debian' /usr/share/applications 2>/dev/null | while read -r f; do
     sed -i 's/Install Debian/Install EmberOS/g' "$f"
 done

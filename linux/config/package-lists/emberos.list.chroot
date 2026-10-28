@@ -19,6 +19,8 @@ network-manager-gnome
 pipewire-audio
 pavucontrol
 dbus-x11
+python3-gi
+gir1.2-gtk-3.0
 
 # Look and feel
 gnome-themes-extra
