@@ -16,11 +16,14 @@ echo "EmberOS 0.1" > /etc/issue.net
 # fallback. The desktop icon itself is created at login by
 # /usr/local/bin/emberos-live-desktop, in the live session only.
 chmod +x /usr/local/bin/emberos-live-desktop
-if [ -f /usr/share/applications/install-debian.desktop ]; then
-    sed -i 's/Debian/EmberOS/g' /usr/share/applications/install-debian.desktop
+grep -rl 'Install Debian' /usr/share/applications 2>/dev/null | while read -r f; do
+    sed -i 's/Install Debian/Install EmberOS/g' "$f"
+done
+# One launcher in the menu is enough: drop ours if Debian's was renamed.
+if grep -rlq 'Name=Install EmberOS' /usr/share/applications --exclude=emberos-install.desktop 2>/dev/null; then
     rm -f /usr/share/applications/emberos-install.desktop
 fi
-rm -f /etc/skel/Desktop/install-debian.desktop /etc/skel/Desktop/emberos-install.desktop
+rm -f /etc/skel/Desktop/*.desktop
 
 # Wallpaper for the usual virtual/real monitor names (xfdesktop keys it by name).
 WALL=/usr/share/backgrounds/emberos/emberos-wallpaper.png

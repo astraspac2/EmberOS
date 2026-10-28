@@ -1,29 +1,34 @@
 #!/bin/sh
-# Put the installer icon on the desktop, but only in the live session.
-# Installed systems have no "boot=live" on their kernel command line, so they
-# never get it.
+# Live session only: replace whatever installer icon(s) the Calamares package
+# put on the desktop with one clean "Install EmberOS" icon that runs the same
+# command. Installed systems have no "boot=live" on their kernel command line,
+# so they never get an installer icon.
 grep -qw 'boot=live' /proc/cmdline || exit 0
 
 DESK="$HOME/Desktop"
 mkdir -p "$DESK"
 
-# The Calamares package may already have placed a launcher; just rebrand it.
-found=
+exec_line=
 for f in "$DESK"/*.desktop; do
     [ -f "$f" ] || continue
-    if grep -qi 'calamares' "$f"; then
-        sed -i 's/Debian/EmberOS/g' "$f"
-        chmod +x "$f"
-        found=1
+    case "$f" in */install-emberos.desktop) continue ;; esac
+    if grep -qiE '^Name(\[[^]]*\])?=.*install' "$f"; then
+        [ -n "$exec_line" ] || exec_line=$(grep -m1 '^Exec=' "$f")
+        rm -f "$f"
     fi
 done
+[ -n "$exec_line" ] || exec_line='Exec=sudo -E calamares'
 
-if [ -z "$found" ]; then
-    src=/usr/share/applications/install-debian.desktop
-    [ -f "$src" ] || src=/usr/share/applications/emberos-install.desktop
-    if [ -f "$src" ]; then
-        cp "$src" "$DESK/install-emberos.desktop"
-        chmod +x "$DESK/install-emberos.desktop"
-    fi
-fi
+cat > "$DESK/install-emberos.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Install EmberOS
+Comment=Install EmberOS to your computer
+$exec_line
+Icon=/usr/share/pixmaps/emberos-install.png
+Terminal=false
+Categories=System;
+StartupNotify=true
+EOF
+chmod +x "$DESK/install-emberos.desktop"
 exit 0
