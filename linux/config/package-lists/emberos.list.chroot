@@ -1,30 +1,16 @@
-# Desktop
-xfce4
-xfce4-whiskermenu-plugin
-xfce4-pulseaudio-plugin
-xfce4-power-manager
-xfce4-screenshooter
-xfce4-taskmanager
-xfce4-notifyd
-xfce4-terminal
-thunar
-mousepad
-ristretto
-lightdm
-lightdm-gtk-greeter
+# Desktop (GNOME)
+gnome-core
+gdm3
+gnome-terminal
+gnome-tweaks
+gnome-shell-extension-dashtodock
+gnome-shell-extension-appindicator
+gnome-shell-extension-manager
 xorg
-gvfs
-gvfs-backends
-network-manager-gnome
-pipewire-audio
-pavucontrol
-dbus-x11
-python3-gi
-gir1.2-gtk-3.0
+dconf-cli
 
 # Look and feel
 gnome-themes-extra
-elementary-xfce-icon-theme
 fonts-noto
 fonts-noto-color-emoji
 fonts-liberation

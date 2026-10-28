@@ -1,0 +1,3 @@
+# Login screen
+[org/gnome/login-screen]
+logo='/usr/share/pixmaps/emberos-install.png'

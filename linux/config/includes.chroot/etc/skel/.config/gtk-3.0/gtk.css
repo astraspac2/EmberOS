@@ -1,45 +1,6 @@
-/* EmberOS accent: warm amber instead of the default blue */
+/* EmberOS accent for GTK 3 apps: warm amber instead of the default blue.
+   (GNOME's own and libadwaita apps use the "orange" accent from Settings.) */
 @define-color theme_selected_bg_color #FF9628;
 @define-color theme_selected_fg_color #1A0E06;
-@define-color accent_color #FF9628;
-@define-color accent_bg_color #FF9628;
-@define-color accent_fg_color #1A0E06;
 @define-color link_color #FFB04D;
 @define-color theme_unfocused_selected_bg_color #B8661F;
-
-/* Desktop icon labels: light text with a soft shadow so they read on the dark wallpaper */
-XfdesktopIconView.view,
-.xfdesktop-icon-view.view,
-.xfdesktop-icon-view {
-    color: #FFF1E4;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
-}
-
-/* Panels: dark warm brown with a thin accent line */
-.xfce4-panel.background,
-.xfce4-panel .background {
-    background-color: #1A1210;
-    background-image: none;
-    color: #F0E4DA;
-}
-
-.xfce4-panel button,
-.xfce4-panel label {
-    color: #F0E4DA;
-}
-
-.xfce4-panel button:hover {
-    background-color: #3A2418;
-    background-image: none;
-}
-
-.xfce4-panel button:checked,
-.xfce4-panel button:active {
-    background-color: #C8651A;
-    background-image: none;
-}
-
-/* Top panel gets the accent line on its bottom edge */
-#XfcePanelWindow:first-child {
-    border-bottom: 1px solid #5A3A22;
-}

@@ -1,0 +1,59 @@
+# EmberOS defaults for every new user (users can change all of this in Settings).
+
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+accent-color='orange'
+gtk-theme='Adwaita-dark'
+clock-show-weekday=true
+enable-hot-corners=false
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/emberos/emberos-wallpaper.png'
+picture-uri-dark='file:///usr/share/backgrounds/emberos/emberos-wallpaper.png'
+picture-options='zoom'
+primary-color='#1A1210'
+
+[org/gnome/desktop/screensaver]
+picture-uri='file:///usr/share/backgrounds/emberos/emberos-wallpaper.png'
+primary-color='#1A1210'
+
+[org/gnome/desktop/wm/preferences]
+button-layout='appmenu:minimize,maximize,close'
+
+[org/gnome/desktop/input-sources]
+sources=[('xkb', 'de')]
+
+[org/gnome/shell]
+favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Settings.desktop']
+enabled-extensions=['dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com']
+
+# Dock along the bottom, like a launcher bar
+[org/gnome/shell/extensions/dash-to-dock]
+dock-position='BOTTOM'
+extend-height=false
+dock-fixed=true
+show-apps-at-top=true
+dash-max-icon-size=48
+transparency-mode='FIXED'
+custom-background-color=true
+background-color='#1A1210'
+background-opacity=0.92
+running-indicator-style='DOTS'
+custom-theme-shrink=true
+
+# Terminal in the EmberOS colours
+[org/gnome/terminal/legacy/profiles:]
+list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9']
+default='b1dcc9dd-5262-4d8d-a863-c897e6d979b9'
+
+[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+visible-name='EmberOS'
+use-theme-colors=false
+background-color='#120D0A'
+foreground-color='#EADBCF'
+cursor-colors-set=true
+cursor-background-color='#FF9628'
+cursor-foreground-color='#1A0E06'
+highlight-colors-set=true
+highlight-background-color='#FF9628'
+highlight-foreground-color='#1A0E06'

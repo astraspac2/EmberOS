@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the EmberOS (Debian + XFCE) live/installer ISO.
+# Build the EmberOS (Debian + GNOME) live/installer ISO.
 # Run as root on Debian/Ubuntu with live-build installed. CI runs this inside
 # a Debian trixie container (see .github/workflows/build-linux-iso.yml).
 set -euo pipefail
@@ -13,6 +13,7 @@ lb config \
     --linux-flavours amd64 \
     --archive-areas "main contrib non-free-firmware" \
     --binary-images iso-hybrid \
+    --chroot-squashfs-compression-type xz \
     --bootloaders "syslinux,grub-efi" \
     --debian-installer none \
     --memtest none \

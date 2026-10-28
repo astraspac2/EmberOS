@@ -7,7 +7,7 @@ A hobby operating system written from scratch in C, with its own x86-64 kernel, 
 ## Two tracks
 
 1. **Custom kernel track** (repo root, `kernel/`): a hobby OS written from scratch in C, with its own desktop. Details below.
-2. **Linux track** (`linux/`): EmberOS as a Debian 13 based distribution with the **XFCE** desktop, a green EmberOS theme, and the **Calamares** graphical installer. A GitHub Actions workflow (`Build EmberOS Linux ISO`) builds the ISO in the cloud and attaches it to a pre-release. Run it from the Actions tab.
+2. **Linux track** (`linux/`): EmberOS as a Debian 13 based distribution with the **GNOME** desktop, a warm amber EmberOS theme, and the **Calamares** graphical installer. A GitHub Actions workflow (`Build EmberOS Linux ISO`) builds the ISO in the cloud and attaches it to a pre-release. Run it from the Actions tab.
 
 ## Goals (custom kernel track)
 

@@ -1,29 +1,14 @@
 #!/bin/sh
-# Live session only: replace whatever installer icon(s) the Calamares package
-# puts on the desktop with one clean "Install EmberOS" icon that runs the same
-# command. Debian's icon can show up a little after login, so keep sweeping for
-# a minute. Installed systems have no "boot=live" on their kernel command line,
-# so they never get an installer icon.
+# Live session only: give the live user an "Install EmberOS" launcher and pin it
+# first in the dock. Installed systems have no "boot=live" on their kernel
+# command line, so they never get it.
 grep -qw 'boot=live' /proc/cmdline || exit 0
 
-DESK="$HOME/Desktop"
-OURS="$DESK/install-emberos.desktop"
-mkdir -p "$DESK"
+APPS="$HOME/.local/share/applications"
+ID=install-emberos.desktop
+mkdir -p "$APPS"
 
-# Remove every installer launcher that is not ours.
-sweep() {
-    for f in "$DESK"/*.desktop; do
-        [ -f "$f" ] || continue
-        [ "$f" = "$OURS" ] && continue
-        if grep -qiE '^Name(\[[^]]*\])?=.*install' "$f"; then
-            rm -f "$f"
-        fi
-    done
-}
-
-sweep
-
-cat > "$OURS" <<EOF
+cat > "$APPS/$ID" <<EOF
 [Desktop Entry]
 Type=Application
 Name=Install EmberOS
@@ -34,12 +19,11 @@ Terminal=false
 Categories=System;
 StartupNotify=true
 EOF
-chmod +x "$OURS"
 
-i=0
-while [ "$i" -lt 30 ]; do
-    sleep 2
-    sweep
-    i=$((i + 1))
-done
+cur=$(gsettings get org.gnome.shell favorite-apps 2>/dev/null) || exit 0
+case "$cur" in
+    *"$ID"*) ;;
+    "[]"|"@as []") gsettings set org.gnome.shell favorite-apps "['$ID']" ;;
+    *) gsettings set org.gnome.shell favorite-apps "$(printf '%s' "$cur" | sed "s/^\[/['$ID', /")" ;;
+esac
 exit 0

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>EmberOS Charcoal</name>
+    <filename>/usr/share/backgrounds/emberos/1-charcoal.png</filename>
+    <options>zoom</options>
+    <pcolor>#1A1210</pcolor>
+    <scolor>#1A1210</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>EmberOS Ember dusk</name>
+    <filename>/usr/share/backgrounds/emberos/2-ember-dusk.png</filename>
+    <options>zoom</options>
+    <pcolor>#2C0F0A</pcolor>
+    <scolor>#2C0F0A</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>EmberOS Midnight</name>
+    <filename>/usr/share/backgrounds/emberos/3-midnight.png</filename>
+    <options>zoom</options>
+    <pcolor>#0F1626</pcolor>
+    <scolor>#0F1626</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>EmberOS Black embers</name>
+    <filename>/usr/share/backgrounds/emberos/4-black-embers.png</filename>
+    <options>zoom</options>
+    <pcolor>#0B0807</pcolor>
+    <scolor>#0B0807</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+</wallpapers>

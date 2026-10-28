@@ -12,18 +12,24 @@ fi
 echo "EmberOS 0.1 \\n \\l" > /etc/issue
 echo "EmberOS 0.1" > /etc/issue.net
 
-# Installer launcher: rebrand Debian's Calamares entry and keep ours only as a
-# fallback. The desktop icon itself is created at login by
-# /usr/local/bin/emberos-live-desktop, in the live session only.
-chmod +x /usr/local/bin/emberos-live-desktop /usr/local/bin/emberos-wallpaper
-grep -rl 'Install Debian' /usr/share/applications 2>/dev/null | while read -r f; do
-    sed -i 's/Install Debian/Install EmberOS/g' "$f"
+# Installer launcher: hide Debian's own Calamares entries everywhere. The live
+# session adds its own "Install EmberOS" launcher at login
+# (/usr/local/bin/emberos-live-desktop), so an installed system never shows one.
+chmod +x /usr/local/bin/emberos-live-desktop
+grep -lE '^Exec=.*calamares' /usr/share/applications/*.desktop 2>/dev/null | while read -r f; do
+    echo "NoDisplay=true" >> "$f"
 done
-# One launcher in the menu is enough: drop ours if Debian's was renamed.
-if grep -rlq 'Name=Install EmberOS' /usr/share/applications --exclude=emberos-install.desktop 2>/dev/null; then
-    rm -f /usr/share/applications/emberos-install.desktop
-fi
 rm -f /etc/skel/Desktop/*.desktop
+
+# Calamares runs as root, which needs the X11 session (Wayland refuses root
+# clients). X11 also behaves better in VMware.
+if [ -f /etc/gdm3/daemon.conf ]; then
+    if grep -q 'WaylandEnable' /etc/gdm3/daemon.conf; then
+        sed -i 's/^#\?\s*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/daemon.conf
+    else
+        sed -i '/^\[daemon\]/a WaylandEnable=false' /etc/gdm3/daemon.conf
+    fi
+fi
 
 # Show fastfetch (with the EmberOS logo) when a terminal opens.
 cat >> /etc/skel/.bashrc <<'EOF'
@@ -34,27 +40,8 @@ if [ -t 1 ] && command -v fastfetch >/dev/null 2>&1; then
 fi
 EOF
 
-# Wallpaper for the usual virtual/real monitor names (xfdesktop keys it by name).
-WALL=/usr/share/backgrounds/emberos/emberos-wallpaper.png
-XML=/etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
-{
-    echo '<?xml version="1.0" encoding="UTF-8"?>'
-    echo '<channel name="xfce4-desktop" version="1.0">'
-    echo '  <property name="backdrop" type="empty">'
-    echo '    <property name="screen0" type="empty">'
-    for mon in monitor0 monitorVirtual-1 monitorVirtual1 monitorVirtual-0 monitorVGA-1 monitorHDMI-1 monitorDP-1 monitoreDP-1 monitorLVDS-1; do
-        echo "      <property name=\"$mon\" type=\"empty\">"
-        echo '        <property name="workspace0" type="empty">'
-        echo '          <property name="color-style" type="int" value="0"/>'
-        echo '          <property name="image-style" type="int" value="5"/>'
-        echo "          <property name=\"last-image\" type=\"string\" value=\"$WALL\"/>"
-        echo '        </property>'
-        echo '      </property>'
-    done
-    echo '    </property>'
-    echo '  </property>'
-    echo '</channel>'
-} > "$XML"
+# Compile the desktop defaults in /etc/dconf/db (colours, dock, wallpaper ...).
+dconf update
 
 # Boot splash / console branding is left at defaults for now.
 exit 0
