@@ -41,7 +41,7 @@ theme_bootloaders() {
         sed -i 's/Debian GNU\/Linux/EmberOS/g; s/Debian/EmberOS/g' "$f"
     done
 
-    # BIOS (syslinux) menu: background image and green colours
+    # BIOS (syslinux) menu: background image and amber colours
     find config/bootloaders -name splash.svg | while read -r f; do
         cp boot/splash-640x480.png "$(dirname "$f")/splash.png"
         rm -f "$f"
@@ -53,20 +53,25 @@ theme_bootloaders() {
         cat >> "$f" <<'EOF'
 
 menu color screen   37;40 #80ffffff #00000000 std
-menu color border   30;44 #ff3ddc84 #00000000 std
-menu color title    1;36;44 #ff3ddc84 #00000000 std
-menu color unsel    37;44 #ffd4ebdd #00000000 std
-menu color sel      7;37;40 #ff04140b #ff3ddc84 all
-menu color hotsel   1;7;37;40 #ff04140b #ff3ddc84 all
-menu color hotkey   1;37;44 #ff3ddc84 #00000000 std
-menu color tabmsg   31;40 #ff6fa588 #00000000 std
-menu color help     37;40 #ffd4ebdd #00000000 std
+menu color border   30;44 #ffff9628 #00000000 std
+menu color title    1;36;44 #ffff9628 #00000000 std
+menu color unsel    37;44 #fff0e4da #00000000 std
+menu color sel      7;37;40 #ff1a0e06 #ffff9628 all
+menu color hotsel   1;7;37;40 #ff1a0e06 #ffff9628 all
+menu color hotkey   1;37;44 #ffff9628 #00000000 std
+menu color tabmsg   31;40 #ffb59680 #00000000 std
+menu color help     37;40 #fff0e4da #00000000 std
 EOF
     done
 
-    # UEFI (GRUB) menu: background image
+    # UEFI (GRUB) menu: background image, and show the theme file in the build
+    # log so its colours can be matched next time
     find config/bootloaders -path '*theme*' -name 'background.png' | while read -r f; do
         cp boot/grub-background.png "$f"
+    done
+    find config/bootloaders -name theme.txt | while read -r f; do
+        echo "=== $f ==="
+        cat "$f"
     done
 }
 

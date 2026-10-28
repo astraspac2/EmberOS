@@ -17,10 +17,10 @@ if [ -d "$SRC" ] && [ -f /etc/calamares/settings.conf ]; then
             -e 's/Debian GNU\/Linux/EmberOS/g' \
             -e 's/Debian/EmberOS/g' \
             -e 's/^\([[:space:]]*componentName:\).*/\1  emberos/' \
-            -e 's/^\([[:space:]]*sidebarBackground:\).*/\1    "#0A1810"/' \
-            -e 's/^\([[:space:]]*sidebarText:\).*/\1          "#D4EBDD"/' \
-            -e 's/^\([[:space:]]*sidebarTextSelect:\).*/\1    "#04140B"/' \
-            -e 's/^\([[:space:]]*sidebarTextHighlight:\).*/\1 "#3DDC84"/' \
+            -e 's/^\([[:space:]]*sidebarBackground:\).*/\1    "#1A1210"/' \
+            -e 's/^\([[:space:]]*sidebarText:\).*/\1          "#F0E4DA"/' \
+            -e 's/^\([[:space:]]*sidebarTextSelect:\).*/\1    "#1A0E06"/' \
+            -e 's/^\([[:space:]]*sidebarTextHighlight:\).*/\1 "#FF9628"/' \
             "$DESC"
 
         # Use the EmberOS orb for the logo and window icon where they are PNGs.

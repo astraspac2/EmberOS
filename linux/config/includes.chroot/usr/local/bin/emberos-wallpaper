@@ -15,7 +15,6 @@ WALLPAPERS = (
     ("Ember dusk", "2-ember-dusk.png"),
     ("Midnight", "3-midnight.png"),
     ("Black embers", "4-black-embers.png"),
-    ("Green embers", "5-green-embers.png"),
 )
 THUMB_W, THUMB_H = 256, 144
 

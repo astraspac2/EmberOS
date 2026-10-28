@@ -34,8 +34,6 @@ STYLES = {
               glow=(170, 80, 20), center=(0.12, 0.92), radius=0.34, wm=(32, 40, 60), embers=0),
     "4": dict(name="black-embers", top=(11, 8, 7), bottom=(2, 2, 2),
               glow=(110, 46, 10), center=(0.5, 1.15), radius=0.55, wm=(30, 20, 14), embers=120),
-    "5": dict(name="green-embers", top=(12, 34, 24), bottom=(4, 10, 7),
-              glow=(30, 120, 70), center=(0.14, 0.9), radius=0.32, wm=(22, 58, 41), embers=60),
 }
 
 

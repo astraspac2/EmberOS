@@ -4,20 +4,25 @@
   linux/boot/splash-640x480.png     for the BIOS (syslinux) boot menu
   linux/boot/grub-background.png    for the UEFI (GRUB) boot menu
 
-Both use the same dark green gradient and soft glow as the wallpaper.
+Both use the charcoal gradient and amber glow of the default wallpaper, with
+the EmberOS logo.
 """
 import os
 import re
 import struct
+import sys
 import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import make_logo  # noqa: E402
+
 FONT_H = os.path.join(HERE, "..", "..", "kernel", "font.h")
 OUT_DIR = os.path.join(HERE, "..", "boot")
 
-TOP = (12, 34, 24)
-BOTTOM = (3, 8, 6)
-GLOW = (30, 120, 70)
+TOP = (34, 31, 30)
+BOTTOM = (8, 7, 7)
+GLOW = (150, 66, 14)
 
 
 def load_font():
@@ -26,8 +31,21 @@ def load_font():
     return [[int(v, 16) for v in r.split(",") if v] for r in rows]
 
 
+def draw_logo(px, width, x0, y0, side):
+    """Paint the logo (amber E, orange flame) with its own alpha."""
+    pxu = 2.0 / side
+    for j in range(side):
+        v = (j + 0.5) / side * 2 - 1
+        for i in range(side):
+            r, g, b, a = make_logo.pixel((i + 0.5) / side * 2 - 1, v, pxu)
+            if a > 0:
+                o = ((y0 + j) * width + x0 + i) * 3
+                for k, c in enumerate((r, g, b)):
+                    px[o + k] = int(px[o + k] * (1 - a) + c * a)
+
+
 def render(width, height, glow_center, glow_radius, text=None, text_scale=0,
-           text_pos=(0, 0), text_color=(61, 220, 132)):
+           text_pos=(0, 0), text_color=(255, 150, 40), logo=None):
     font = load_font()
     px = bytearray(width * height * 3)
     gx, gy = glow_center
@@ -63,6 +81,9 @@ def render(width, height, glow_center, glow_radius, text=None, text_scale=0,
                                 o = (yy * width + xx) * 3
                                 px[o:o + 3] = bytes(text_color)
 
+    if logo:
+        draw_logo(px, width, *logo)
+
     raw = bytearray()
     for y in range(height):
         raw.append(0)
@@ -85,11 +106,13 @@ def main():
     text = "EmberOS"
     scale = 5
     width = len(text) * 8 * scale
-    splash = render(640, 480, (110, 420), 330, text, scale, ((640 - width) // 2, 26))
+    tx = (640 - width) // 2
+    splash = render(640, 480, (110, 420), 330, text, scale, (tx, 26),
+                    logo=(tx - 84, 12, 72))
     with open(os.path.join(OUT_DIR, "splash-640x480.png"), "wb") as f:
         f.write(splash)
 
-    grub = render(1920, 1080, (170, 950), 620)
+    grub = render(1920, 1080, (170, 950), 620, logo=(900, 70, 120))
     with open(os.path.join(OUT_DIR, "grub-background.png"), "wb") as f:
         f.write(grub)
 
