@@ -1,0 +1,29 @@
+#!/bin/sh
+# Put the installer icon on the desktop, but only in the live session.
+# Installed systems have no "boot=live" on their kernel command line, so they
+# never get it.
+grep -qw 'boot=live' /proc/cmdline || exit 0
+
+DESK="$HOME/Desktop"
+mkdir -p "$DESK"
+
+# The Calamares package may already have placed a launcher; just rebrand it.
+found=
+for f in "$DESK"/*.desktop; do
+    [ -f "$f" ] || continue
+    if grep -qi 'calamares' "$f"; then
+        sed -i 's/Debian/EmberOS/g' "$f"
+        chmod +x "$f"
+        found=1
+    fi
+done
+
+if [ -z "$found" ]; then
+    src=/usr/share/applications/install-debian.desktop
+    [ -f "$src" ] || src=/usr/share/applications/emberos-install.desktop
+    if [ -f "$src" ]; then
+        cp "$src" "$DESK/install-emberos.desktop"
+        chmod +x "$DESK/install-emberos.desktop"
+    fi
+fi
+exit 0

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=EmberOS live session setup
+Exec=/usr/local/bin/emberos-live-desktop
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
