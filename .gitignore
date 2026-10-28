@@ -18,3 +18,4 @@ linux/config/common
 linux/config/source
 
 logo-examples/
+__pycache__/
