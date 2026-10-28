@@ -16,3 +16,5 @@ linux/config/bootstrap
 linux/config/chroot
 linux/config/common
 linux/config/source
+
+logo-examples/
