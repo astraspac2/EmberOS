@@ -11,9 +11,9 @@ from gi.repository import GdkPixbuf, Gtk  # noqa: E402
 DIR = "/usr/share/backgrounds/emberos"
 # The first entry is the default every new user starts with.
 WALLPAPERS = (
-    ("Charcoal (default)", "1-charcoal.png"),
+    ("Midnight (default)", "3-midnight.png"),
     ("Ember dusk", "2-ember-dusk.png"),
-    ("Midnight", "3-midnight.png"),
+    ("Charcoal", "1-charcoal.png"),
     ("Black embers", "4-black-embers.png"),
 )
 THUMB_W, THUMB_H = 256, 144

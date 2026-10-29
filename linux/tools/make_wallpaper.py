@@ -3,7 +3,7 @@
 
   make_wallpaper.py --sheet     preview every style in logo-examples/wallpapers/
   make_wallpaper.py [--all|N]   write the wallpapers the chooser app offers;
-                                style 1 is also the default (emberos-wallpaper.png)
+                                style 3 is also the default (emberos-wallpaper.png)
 
 Each style is a dark vertical gradient, a soft glow, optional pixel embers
 drifting up (like the pixel flame of the logo) and a faint logo watermark.
@@ -21,7 +21,7 @@ import make_logo  # noqa: E402
 OUT = os.path.join(HERE, "..", "config", "includes.chroot", "usr", "share",
                    "backgrounds", "emberos", "emberos-wallpaper.png")
 SHEET_DIR = os.path.join(HERE, "..", "..", "logo-examples", "wallpapers")
-DEFAULT_STYLE = "1"
+DEFAULT_STYLE = "3"
 
 AMBER = (255, 150, 40)
 
