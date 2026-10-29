@@ -17,7 +17,7 @@ picture-uri='file:///usr/share/backgrounds/emberos/emberos-wallpaper.png'
 primary-color='#1A1210'
 
 [org/gnome/desktop/input-sources]
-sources=[('xkb', 'de')]
+sources=[('xkb', 'us')]
 
 [com/solus-project/budgie-panel]
 dark-theme=true

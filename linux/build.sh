@@ -21,7 +21,7 @@ lb config \
     --iso-application "EmberOS" \
     --iso-publisher "EmberOS project" \
     --iso-volume "EmberOS" \
-    --bootappend-live "boot=live components quiet splash username=ember hostname=emberos locales=en_US.UTF-8 keyboard-layouts=de"
+    --bootappend-live "boot=live components quiet splash username=ember hostname=emberos locales=en_US.UTF-8 keyboard-layouts=us"
 
 # ---- boot menu theme (best effort: a miss here must never fail the build) ----
 theme_bootloaders() {
