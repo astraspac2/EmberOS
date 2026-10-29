@@ -47,6 +47,9 @@ while [ "$i" -lt 30 ]; do
         done
         mkdir -p "$(dirname "$MARK")"
         touch "$MARK"
+        # The task list only reads its pins when it starts: restart the panel.
+        sleep 1
+        nohup budgie-panel --replace >/dev/null 2>&1 &
         exit 0
     fi
     sleep 2
