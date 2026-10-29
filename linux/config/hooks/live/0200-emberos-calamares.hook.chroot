@@ -37,6 +37,10 @@ if [ -d "$SRC" ] && [ -f /etc/calamares/settings.conf ]; then
         sed -i 's/Debian GNU\/Linux/EmberOS/g; s/Debian/EmberOS/g' "$f"
     done
 
+    # EmberOS slideshow shown while installing
+    cp /usr/share/emberos/show.qml /usr/share/emberos/logo.png "$DST/"
+    [ -f "$DESC" ] && sed -i 's/^\([[:space:]]*slideshow:\).*/\1 "show.qml"/' "$DESC"
+
     sed -i 's/^\([[:space:]]*branding:\).*/\1 emberos/' /etc/calamares/settings.conf
     echo "calamares: branding set to emberos"
 else

@@ -15,12 +15,12 @@ echo "EmberOS 0.1" > /etc/issue.net
 # Installer launcher: hide Debian's own Calamares entries everywhere. The live
 # session adds its own "Install EmberOS" launcher at login
 # (/usr/local/bin/emberos-session-setup), so an installed system never shows one.
-chmod +x /usr/local/bin/emberos-session-setup /usr/local/bin/emberos-wallpaper
+chmod +x /usr/local/bin/emberos-session-setup /usr/local/bin/emberos-wallpaper /usr/local/bin/emberos-welcome
 
 # Drop apps nobody asked for (PDF viewers, help browsers, extras that get
 # pulled in as "recommends"). Firefox opens PDFs itself.
-for p in evince evince-common papers atril okular yelp gnome-user-docs gnome-software \
-         totem rhythmbox cheese gnome-contacts gnome-calendar gnome-maps gnome-weather \
+for p in evince evince-common papers atril okular yelp gnome-user-docs \
+         totem cheese gnome-contacts gnome-calendar gnome-maps gnome-weather \
          simple-scan transmission-gtk hexchat thunderbird libreoffice-common; do
     if dpkg -s "$p" >/dev/null 2>&1; then
         apt-get purge -y "$p" || true
@@ -40,6 +40,18 @@ if [ -t 1 ] && command -v fastfetch >/dev/null 2>&1; then
 fi
 EOF
 
+
+# Firewall on by default (deny incoming, allow outgoing).
+if [ -f /etc/ufw/ufw.conf ]; then
+    sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+    sed -i 's/^DEFAULT_INPUT_POLICY=.*/DEFAULT_INPUT_POLICY="DROP"/' /etc/default/ufw
+fi
+
+# EmberOS boot splash (plymouth). Best effort: a miss must not fail the build.
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+    plymouth-set-default-theme emberos || true
+    update-initramfs -u || true
+fi
 # Compile the desktop defaults in /etc/dconf/db (colours, wallpaper, terminal ...).
 dconf update
 

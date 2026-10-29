@@ -38,3 +38,13 @@ cursor-foreground-color='#1A0E06'
 highlight-colors-set=true
 highlight-background-color='#FF9628'
 highlight-foreground-color='#1A0E06'
+
+# Print Screen opens the screenshot tool
+[org/gnome/settings-daemon/plugins/media-keys]
+screenshot=@as []
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/screenshot/']
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/screenshot]
+name='Screenshot'
+command='gnome-screenshot -i'
+binding='Print'

@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=EmberOS welcome
+Exec=sh -c 'sleep 6; [ -e "$HOME/.config/emberos/no-welcome" ] || /usr/local/bin/emberos-welcome'
+NoDisplay=true

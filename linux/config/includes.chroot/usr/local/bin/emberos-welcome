@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""EmberOS welcome window: shown once after first login, also in the menu."""
+import os
+import subprocess
+
+import gi
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import GdkPixbuf, Gtk  # noqa: E402
+
+LIVE = "boot=live" in open("/proc/cmdline").read().split()
+
+
+def run(*cmd):
+    subprocess.Popen(list(cmd))
+
+
+class Welcome(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Welcome to EmberOS")
+        self.set_default_size(440, -1)
+        self.set_border_width(24)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.add(box)
+
+        logo = "/usr/share/pixmaps/emberos-install.png"
+        if os.path.exists(logo):
+            pix = GdkPixbuf.Pixbuf.new_from_file_at_scale(logo, 112, 112, True)
+            box.pack_start(Gtk.Image.new_from_pixbuf(pix), False, False, 4)
+        title = Gtk.Label()
+        title.set_markup('<span size="xx-large" weight="bold" foreground="#FF9628">Welcome to EmberOS</span>')
+        box.pack_start(title, False, False, 0)
+        sub = Gtk.Label(label="A warm, calm desktop built on Debian.")
+        box.pack_start(sub, False, False, 8)
+
+        if LIVE:
+            self.button(box, "Install EmberOS to this computer", ["sudo", "-E", "calamares"], True)
+        self.button(box, "Choose a wallpaper", ["/usr/local/bin/emberos-wallpaper"])
+        self.button(box, "Get apps (Software)", ["gnome-software"])
+        self.button(box, "Settings", ["budgie-control-center"])
+        self.button(box, "Update the system", [
+            "gnome-terminal", "--", "bash", "-c",
+            "sudo apt update && sudo apt full-upgrade; echo; read -p 'Done. Press Enter.'"])
+
+        self.check = Gtk.CheckButton(label="Show this window at login")
+        self.check.set_active(True)
+        self.check.connect("toggled", self.on_toggle)
+        box.pack_start(self.check, False, False, 6)
+
+    def button(self, box, label, cmd, suggested=False):
+        b = Gtk.Button(label=label)
+        if suggested:
+            b.get_style_context().add_class("suggested-action")
+        b.connect("clicked", lambda _b: run(*cmd))
+        box.pack_start(b, False, False, 0)
+
+    def on_toggle(self, check):
+        flag = os.path.expanduser("~/.config/emberos/no-welcome")
+        os.makedirs(os.path.dirname(flag), exist_ok=True)
+        if check.get_active():
+            if os.path.exists(flag):
+                os.remove(flag)
+        else:
+            open(flag, "w").close()
+
+
+if __name__ == "__main__":
+    win = Welcome()
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()

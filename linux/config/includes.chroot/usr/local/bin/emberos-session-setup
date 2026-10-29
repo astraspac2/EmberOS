@@ -3,6 +3,13 @@
 # Budgie taskbar. In the live session it also creates an "Install EmberOS"
 # launcher and pins it first (installed systems have no "boot=live" on their
 # kernel command line, so they never get it).
+# Software store: add Flathub for this user (needs network; harmless if offline,
+# retried at every login until it works).
+if command -v flatpak >/dev/null 2>&1 && ! flatpak remotes --user 2>/dev/null | grep -q flathub; then
+    (flatpak remote-add --user --if-not-exists flathub \
+        https://dl.flathub.org/repo/flathub.flatpakrepo >/dev/null 2>&1 &)
+fi
+
 MARK="$HOME/.config/emberos/session-setup-done"
 [ -e "$MARK" ] && exit 0
 

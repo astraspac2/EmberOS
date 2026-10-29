@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to EmberOS
+Comment=Install, pick a wallpaper, get apps
+Exec=/usr/local/bin/emberos-welcome
+Icon=/usr/share/pixmaps/emberos-install.png
+Terminal=false
+Categories=System;Settings;

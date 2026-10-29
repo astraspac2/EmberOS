@@ -43,3 +43,25 @@ curl
 wget
 nano
 htop
+
+# Apps: software store (with Flathub), media, screenshots
+gnome-software
+gnome-software-plugin-flatpak
+flatpak
+vlc
+rhythmbox
+gnome-screenshot
+
+# Printing and Bluetooth
+cups
+system-config-printer
+bluez
+blueman
+
+# Safe by default: firewall and automatic security updates
+ufw
+unattended-upgrades
+
+# Boot splash
+plymouth
+plymouth-themes
