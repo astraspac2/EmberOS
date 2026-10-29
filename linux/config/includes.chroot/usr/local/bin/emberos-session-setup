@@ -25,20 +25,23 @@ EOF
     pins="'install-emberos.desktop', $pins"
 fi
 
-# The panel creates its applets a few seconds after login: wait for the taskbar.
+# The panel creates its applets a few seconds after login: wait for them.
+# Budgie keeps each Icon Tasklist's settings under
+# /com/solus-project/budgie-panel/instance/icon-tasklist/{uuid}/. Writing the
+# pins for every applet uuid is harmless (only the task list reads them) and
+# does not depend on how the applet is named.
 base=/com/solus-project/budgie-panel/applets/
 i=0
 while [ "$i" -lt 30 ]; do
-    for u in $(dconf list "$base" 2>/dev/null | tr -d '/'); do
-        if [ "$(dconf read "$base$u/name" 2>/dev/null)" = "'Icon Task List'" ]; then
-            # the applet keeps its own settings under the applet's path
-            dconf write "$base$u/settings/pinned-launchers" "[$pins]"
-            dconf write "$base$u/pinned-launchers" "[$pins]"
-            mkdir -p "$(dirname "$MARK")"
-            touch "$MARK"
-            exit 0
-        fi
-    done
+    list=$(dconf list "$base" 2>/dev/null | tr -d '/')
+    if [ -n "$list" ]; then
+        for u in $list; do
+            dconf write "/com/solus-project/budgie-panel/instance/icon-tasklist/$u/pinned-launchers" "[$pins]"
+        done
+        mkdir -p "$(dirname "$MARK")"
+        touch "$MARK"
+        exit 0
+    fi
     sleep 2
     i=$((i + 1))
 done
