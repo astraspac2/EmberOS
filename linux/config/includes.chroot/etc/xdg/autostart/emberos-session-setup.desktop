@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=EmberOS session setup
+Exec=/usr/local/bin/emberos-session-setup
+NoDisplay=true

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the EmberOS (Debian + GNOME) live/installer ISO.
+# Build the EmberOS (Debian + Budgie) live/installer ISO.
 # Run as root on Debian/Ubuntu with live-build installed. CI runs this inside
 # a Debian trixie container (see .github/workflows/build-linux-iso.yml).
 set -euo pipefail

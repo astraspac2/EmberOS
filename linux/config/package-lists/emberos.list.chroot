@@ -1,13 +1,21 @@
-# Desktop (GNOME)
-gnome-core
-gdm3
-gnome-terminal
-gnome-tweaks
-gnome-shell-extension-dashtodock
-gnome-shell-extension-appindicator
-gnome-shell-extension-manager
+# Desktop (Budgie)
+budgie-desktop
+budgie-desktop-view
+lightdm
+lightdm-gtk-greeter
 xorg
 dconf-cli
+gnome-keyring
+
+# Everyday apps that match the desktop
+nautilus
+gnome-terminal
+gnome-text-editor
+gnome-system-monitor
+gnome-calculator
+gnome-tweaks
+loupe
+file-roller
 
 # Look and feel
 gnome-themes-extra

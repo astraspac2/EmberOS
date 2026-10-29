@@ -45,7 +45,7 @@ jobs:
           # A release file may not exceed 2 GiB: split bigger ISOs into parts.
           # Join them again with:  copy /b a.iso.part00+a.iso.part01 a.iso  (Windows)
           iso=$(ls linux/*.iso)
-          notes="Debian 13 + GNOME + Calamares installer. Built from commit ${{ github.sha }}."
+          notes="Debian 13 + Budgie + Calamares installer. Built from commit ${{ github.sha }}."
           files="$iso"
           if [ "$(stat -c %s "$iso")" -gt 2000000000 ]; then
             split -b 1900M -d "$iso" "$iso.part"

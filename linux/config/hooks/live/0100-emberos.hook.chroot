@@ -14,22 +14,12 @@ echo "EmberOS 0.1" > /etc/issue.net
 
 # Installer launcher: hide Debian's own Calamares entries everywhere. The live
 # session adds its own "Install EmberOS" launcher at login
-# (/usr/local/bin/emberos-live-desktop), so an installed system never shows one.
-chmod +x /usr/local/bin/emberos-live-desktop
+# (/usr/local/bin/emberos-session-setup), so an installed system never shows one.
+chmod +x /usr/local/bin/emberos-session-setup
 grep -lE '^Exec=.*calamares' /usr/share/applications/*.desktop 2>/dev/null | while read -r f; do
     echo "NoDisplay=true" >> "$f"
 done
 rm -f /etc/skel/Desktop/*.desktop
-
-# Calamares runs as root, which needs the X11 session (Wayland refuses root
-# clients). X11 also behaves better in VMware.
-if [ -f /etc/gdm3/daemon.conf ]; then
-    if grep -q 'WaylandEnable' /etc/gdm3/daemon.conf; then
-        sed -i 's/^#\?\s*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/daemon.conf
-    else
-        sed -i '/^\[daemon\]/a WaylandEnable=false' /etc/gdm3/daemon.conf
-    fi
-fi
 
 # Show fastfetch (with the EmberOS logo) when a terminal opens.
 cat >> /etc/skel/.bashrc <<'EOF'
@@ -40,7 +30,7 @@ if [ -t 1 ] && command -v fastfetch >/dev/null 2>&1; then
 fi
 EOF
 
-# Compile the desktop defaults in /etc/dconf/db (colours, dock, wallpaper ...).
+# Compile the desktop defaults in /etc/dconf/db (colours, wallpaper, terminal ...).
 dconf update
 
 # Boot splash / console branding is left at defaults for now.
