@@ -15,6 +15,8 @@ gnome-system-monitor
 gnome-calculator
 gnome-tweaks
 loupe
+python3-gi
+gir1.2-gtk-3.0
 file-roller
 
 # Look and feel

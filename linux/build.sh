@@ -71,8 +71,9 @@ EOF
         cp boot/grub-background.png "$f"
     done
     find config/bootloaders -name theme.txt | while read -r f; do
-        echo "=== $f ==="
-        cat "$f"
+        cp boot/grub-theme.txt "$f"
+        cp boot/grub-background.png "$(dirname "$f")/background.png"
+        echo "theme: replaced $f"
     done
 }
 

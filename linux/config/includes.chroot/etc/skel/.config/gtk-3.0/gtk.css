@@ -4,3 +4,35 @@
 @define-color theme_selected_fg_color #1A0E06;
 @define-color link_color #FFB04D;
 @define-color theme_unfocused_selected_bg_color #B8661F;
+
+/* Budgie panel, menu and side panel in warm charcoal with amber highlights */
+.budgie-panel, .budgie-container, .budgie-panel.dock {
+  background-color: #1A1210;
+  background-image: none;
+  color: #F0E4DA;
+  border-color: #3A2418;
+}
+.budgie-panel button, .budgie-panel .alert {
+  color: #F0E4DA;
+  background-image: none;
+  box-shadow: none;
+}
+.budgie-panel button:hover {
+  background-color: rgba(255, 150, 40, 0.18);
+}
+.budgie-panel button:active, .budgie-panel button:checked {
+  background-color: rgba(255, 150, 40, 0.30);
+  border-bottom: 2px solid #FF9628;
+}
+.budgie-panel .icon-tasklist button.running {
+  border-bottom: 2px solid #B8661F;
+}
+.budgie-menu, .budgie-menu.background, .budgie-popover, .budgie-popover.background {
+  background-color: #1A1210;
+  color: #F0E4DA;
+}
+.raven, .raven.background, .raven-header, .raven-background {
+  background-color: #1A1210;
+  color: #F0E4DA;
+}
+.raven .raven-header { background-color: #241812; }

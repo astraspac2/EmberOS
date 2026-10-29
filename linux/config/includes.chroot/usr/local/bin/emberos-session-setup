@@ -6,7 +6,7 @@
 MARK="$HOME/.config/emberos/session-setup-done"
 [ -e "$MARK" ] && exit 0
 
-pins="'firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop'"
+pins="'firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'emberos-wallpaper.desktop'"
 
 if grep -qw 'boot=live' /proc/cmdline; then
     APPS="$HOME/.local/share/applications"

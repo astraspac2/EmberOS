@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Wallpapers
+Comment=Choose the EmberOS desktop wallpaper
+Exec=/usr/local/bin/emberos-wallpaper
+Icon=preferences-desktop-wallpaper
+Terminal=false
+Categories=Settings;DesktopSettings;GTK;

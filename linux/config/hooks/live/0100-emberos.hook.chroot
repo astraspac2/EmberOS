@@ -15,7 +15,17 @@ echo "EmberOS 0.1" > /etc/issue.net
 # Installer launcher: hide Debian's own Calamares entries everywhere. The live
 # session adds its own "Install EmberOS" launcher at login
 # (/usr/local/bin/emberos-session-setup), so an installed system never shows one.
-chmod +x /usr/local/bin/emberos-session-setup
+chmod +x /usr/local/bin/emberos-session-setup /usr/local/bin/emberos-wallpaper
+
+# Drop apps nobody asked for (PDF viewers, help browsers, extras that get
+# pulled in as "recommends"). Firefox opens PDFs itself.
+for p in evince evince-common papers atril okular yelp gnome-user-docs gnome-software \
+         totem rhythmbox cheese gnome-contacts gnome-calendar gnome-maps gnome-weather \
+         simple-scan transmission-gtk hexchat thunderbird libreoffice-common; do
+    if dpkg -s "$p" >/dev/null 2>&1; then
+        apt-get purge -y "$p" || true
+    fi
+done
 grep -lE '^Exec=.*calamares' /usr/share/applications/*.desktop 2>/dev/null | while read -r f; do
     echo "NoDisplay=true" >> "$f"
 done
