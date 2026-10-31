@@ -2,7 +2,7 @@
 
 A warm, dark, amber-themed operating system with two tracks: a **Linux distribution** you can install and use every day, and a **hobby kernel** written from scratch in C.
 
-> **Status:** the Linux track boots, installs and works in VMware. The custom kernel track is early development.
+> **Status:** EmberOS Linux 0.1 is out. The custom kernel track is in early development.
 
 ## Two tracks
 
@@ -13,26 +13,38 @@ A warm, dark, amber-themed operating system with two tracks: a **Linux distribut
 
 ### What you get
 
-- Debian 13 (trixie) with the Linux kernel, Budgie desktop, dark with amber accents everywhere (panel, terminal, installer, boot menu, boot splash)
-- Graphical installer (Calamares) with an EmberOS slideshow; the live session has an "Install EmberOS" launcher
-- Welcome window on first login, a wallpaper chooser (four warm wallpapers, Midnight is the default)
-- Software store (GNOME Software) with Flathub, Firefox, VLC, Rhythmbox, Files, Terminal, Text Editor, screenshots (Print Screen)
-- Printing (CUPS) and Bluetooth (Blueman) support
-- Safe by default: firewall (ufw) enabled and automatic security updates
-- VMware integration (clipboard, resizing) via open-vm-tools
+- Debian 13 (trixie) with the Linux kernel and Budgie desktop, dark with amber accents everywhere: panel, terminal, installer, boot menu and boot splash
+- Graphical installer (Calamares) with an EmberOS slideshow
+- Welcome window on first login, and a wallpaper chooser with four warm wallpapers
+- Software store (GNOME Software) with Flathub, plus Firefox, VLC, Files, Terminal, Text Editor and screenshots (Print Screen)
+- Printing (CUPS) and Bluetooth (Blueman) support, and hardware firmware (Wi-Fi and more) included
+- Safe by default: firewall (ufw) on and automatic security updates
 - Default keyboard layout US (QWERTY); the installer asks for yours
+
+### System requirements
+
+| | Minimum | Recommended |
+|---|---|---|
+| Processor | 64-bit (x86-64), 2 cores | 4 cores or more |
+| Memory | 2 GB RAM | 4 GB RAM or more |
+| Disk | 15 GB | 30 GB or more (SSD) |
+| Graphics | any with 1024x768 | any modern GPU |
+| Firmware | UEFI or legacy BIOS (turn Secure Boot off) | UEFI |
+| USB stick | 4 GB | 8 GB |
 
 ### Getting the ISO
 
-The ISO is built in the cloud by GitHub Actions: open the **Actions** tab, run **Build EmberOS Linux ISO**, and download the ISO from the new pre-release (`linux-iso-N`). ISOs over 2 GB are split into `.part00`, `.part01`; join them in order:
+Download `ember-os.iso` from the [latest release](../../releases/latest).
 
-```
-copy /b emberos-amd64.hybrid.iso.part00+emberos-amd64.hybrid.iso.part01 emberos.iso
-```
+The ISO is built in the cloud by GitHub Actions: open the **Actions** tab and run **Build EmberOS Linux ISO** to build your own.
 
-### Trying it
+### Installing
 
-Create a VMware (or any x86-64) VM with 4 GB RAM, 2+ CPUs and a 25 GB disk, attach the ISO, and boot. The live user is `ember` with password `live`. Click **Install EmberOS** to install to the disk.
+1. Write `ember-os.iso` to a USB stick with [Rufus](https://rufus.ie) (choose *DD image mode* if asked), [balenaEtcher](https://etcher.balena.io), or on Linux `sudo dd if=ember-os.iso of=/dev/sdX bs=4M status=progress`.
+2. Boot the computer from the USB stick (usually F12, F10, F2 or Esc at power-on) and pick **EmberOS**.
+3. Try the live session (user `ember`, password `live`) or click **Install EmberOS** and follow the installer.
+
+It also runs in a virtual machine (VMware, VirtualBox, and similar).
 
 ### How it is built
 

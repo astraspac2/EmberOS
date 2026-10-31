@@ -3,6 +3,10 @@
 # Run as root on Debian/Ubuntu with live-build installed. CI runs this inside
 # a Debian trixie container (see .github/workflows/build-linux-iso.yml).
 set -euo pipefail
+
+# Smaller squashfs: 1 MiB blocks and the x86 filter for xz (the ISO has to stay
+# under GitHub's 2 GiB release file limit so it can be one file).
+export MKSQUASHFS_OPTIONS="-b 1M -Xdict-size 100% -Xbcj x86"
 cd "$(dirname "$0")"
 
 lb clean --purge 2>/dev/null || true

@@ -52,6 +52,18 @@ if command -v plymouth-set-default-theme >/dev/null 2>&1; then
     plymouth-set-default-theme emberos || true
     update-initramfs -u || true
 fi
+
+# Trim the image: keep English and German texts, drop docs, man and info pages
+# (the licence files stay, as Debian requires). Keeps the ISO under 2 GiB.
+for d in /usr/share/locale/*; do
+    case "$(basename "$d")" in
+        en|en_*|de|de_*|locale.alias) ;;
+        *) rm -rf "$d" ;;
+    esac
+done
+find /usr/share/doc -type f ! -name copyright -delete 2>/dev/null || true
+rm -rf /usr/share/man/* /usr/share/info/* /usr/share/help/* 2>/dev/null || true
+apt-get clean
 # Compile the desktop defaults in /etc/dconf/db (colours, wallpaper, terminal ...).
 dconf update
 
