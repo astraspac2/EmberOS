@@ -7,7 +7,7 @@ A warm, dark, amber-themed operating system with two tracks: a **Linux distribut
 ## Two tracks
 
 1. **Linux track** (`linux/`): EmberOS as a Debian 13 based distribution with the **Budgie** desktop, a warm amber theme, and the **Calamares** graphical installer.
-2. **Custom kernel track** (repo root, `kernel/`): a hobby OS with its own x86-64 kernel, a terminal shell and a desktop called **the Hearth**. Details further down.
+2. **Custom kernel track** (`custom-kernel/`): a hobby OS with its own x86-64 kernel, a terminal shell and a desktop called **the Hearth**. Details further down.
 
 ## EmberOS Linux
 
@@ -81,13 +81,14 @@ Requirements (Windows):
 - [LLVM/clang](https://llvm.org/) (with `lld`)
 - Python 3
 
-Download the [Limine](https://github.com/limine-bootloader/limine) v12.9.5 binary release into `third_party/limine/limine-binary/` and `limine.h` from [limine-protocol](https://github.com/limine-bootloader/limine-protocol) into `third_party/limine/` (these are not committed). Then:
+Download the [Limine](https://github.com/limine-bootloader/limine) v12.9.5 binary release into `custom-kernel/third_party/limine/limine-binary/` and `limine.h` from [limine-protocol](https://github.com/limine-bootloader/limine-protocol) into `custom-kernel/third_party/limine/` (these are not committed). Then:
 
 ```
+cd custom-kernel
 python build.py
 ```
 
-This compiles the kernel and writes `EmberOS.iso` in the project root. No `xorriso` is needed; the ISO writer is built in.
+This compiles the kernel and writes `EmberOS.iso` in `custom-kernel/`. No `xorriso` is needed; the ISO writer is built in.
 
 ### Running
 
