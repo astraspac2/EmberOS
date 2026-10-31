@@ -34,13 +34,13 @@ A warm, dark, amber-themed operating system with two tracks: a **Linux distribut
 
 ### Getting the ISO
 
-Download `ember-os.iso` from the [latest release](../../releases/latest).
+Download `EmberOS.iso` from the [latest release](../../releases/latest).
 
 The ISO is built in the cloud by GitHub Actions: open the **Actions** tab and run **Build EmberOS Linux ISO** to build your own.
 
 ### Installing
 
-1. Write `ember-os.iso` to a USB stick with [Rufus](https://rufus.ie) (choose *DD image mode* if asked), [balenaEtcher](https://etcher.balena.io), or on Linux `sudo dd if=ember-os.iso of=/dev/sdX bs=4M status=progress`.
+1. Write `EmberOS.iso` to a USB stick with [Rufus](https://rufus.ie) (choose *DD image mode* if asked), [balenaEtcher](https://etcher.balena.io), or on Linux `sudo dd if=EmberOS.iso of=/dev/sdX bs=4M status=progress`.
 2. Boot the computer from the USB stick (usually F12, F10, F2 or Esc at power-on) and pick **EmberOS**.
 3. Try the live session (user `ember`, password `live`) or click **Install EmberOS** and follow the installer.
 
