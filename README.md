@@ -1,5 +1,5 @@
 # EmberOS
-
+this is made with claude aswell as the Owner making changes as well
 A warm, dark, amber-themed operating system with two tracks: a **Linux distribution** you can install and use every day, and a **hobby kernel** written from scratch in C.
 
 > **Status:** EmberOS Linux 0.1 is out. The custom kernel track is in early development.
